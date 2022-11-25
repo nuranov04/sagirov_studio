@@ -1,22 +1,23 @@
 from telebot import TeleBot
+from decouple import config
 
-import re
 
 from datetime import datetime
-from time import sleep
-
 from bot.models import UserBid
-from con_file import TOKEN
+from utils.class_redis import r
 from utils.helper import user
 
-bot = TeleBot(TOKEN)
+bot = TeleBot(config("TOKEN"))
 
 
 @bot.message_handler(commands=['start'])
 def get_start_message(message):
-    msg = bot.send_message(chat_id=message.from_user.id,
-                           text=f"Hello, {message.from_user.first_name}!\nSend me your name)")
-    bot.register_next_step_handler(msg, get_name)
+    if r.get_status_code():
+        msg = bot.send_message(chat_id=message.from_user.id,
+                               text=f"Hello, {message.from_user.first_name}!\nSend me your name)")
+        bot.register_next_step_handler(msg, get_name)
+    else:
+        bot.reply_to(message, "sorry try after 10 minutes")
 
 
 def get_name(message):
@@ -65,6 +66,6 @@ def get_date_of_birth(message):
         bot.register_next_step_handler(msg, get_date_of_birth)
 
 
-@bot.message_handler()
+@bot.message_handler(func=lambda message: True)
 def main_handler(message):
     bot.send_message(chat_id=message.from_user.id, text="send me /start command")

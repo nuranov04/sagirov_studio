@@ -7,4 +7,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from bot.views import bot
         print('bot is ready')
+
         bot.polling(none_stop=True, interval=0)

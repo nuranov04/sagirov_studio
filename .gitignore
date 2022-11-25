@@ -1,6 +1,7 @@
 ### main template
 # Byte-compiled / optimized / DLL files
 __pycache__/
+utils/screenshots/*.png
 *.py[cod]
 *$py.class
 .idea/
