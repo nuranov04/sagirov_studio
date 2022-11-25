@@ -5,6 +5,7 @@ utils/screenshots/*.png
 *.py[cod]
 *$py.class
 .idea/
+screenshots/
 # C extensions
 *.so
 .vscode/
@@ -109,7 +110,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+#.env
 .venv
 env/
 venv/
