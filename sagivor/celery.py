@@ -7,7 +7,7 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sagivor.settings')
 
-app = Celery('sagivor', broker="redis://127.0.0.1:6379")
+app = Celery('sagivor')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 

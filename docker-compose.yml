@@ -31,6 +31,8 @@ services:
       - db
     env_file:
       - ./.env
+    environment:
+      - REDIS_HOST=redis
 
   bot:
     restart: unless-stopped
@@ -62,6 +64,31 @@ services:
     depends_on:
       - db
       - backend
+
+  celery:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    volumes:
+      - .:/code
+    command: celery -A sagivor worker -l info
+    depends_on:
+      - redis
+      - backend
+      - bot
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    command: celery -A sagivor beat -l info
+    depends_on:
+      - redis
+      - db
+      - celery
+      - backend
+    restart: always
 
 
 volumes:

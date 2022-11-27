@@ -13,9 +13,7 @@ class Redis:
         Подключение к Redis
         """
         self.redis_client = redis.StrictRedis(
-            host="127.0.0.1",
-            port=6379,
-            decode_responses=True
+            host="redis",
         )
 
     def get_status_code(self):
