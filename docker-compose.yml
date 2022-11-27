@@ -1,0 +1,74 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: sagivor-redis-server
+    networks:
+      - my-network
+
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - my-network
+    env_file:
+      - ./.env
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    entrypoint: /app/docker/backend/wsgi-entrypoint.sh
+    networks:
+      - my-network
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  bot:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    entrypoint: /app/docker/backend/bot-entrypoint.sh
+    networks:
+      - my-network
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./.env
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - 8000:80
+    volumes:
+      - ./docker/nginx/dev:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/media
+    networks:
+      - my-network
+    depends_on:
+      - db
+      - backend
+
+
+volumes:
+  static_volume:
+  postgres_data:
+  media_volume:
+  redis_data:
+
+networks:
+  my-network:

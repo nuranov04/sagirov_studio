@@ -195,7 +195,7 @@ def send_user_values(name, surname, user_id, email, phone_number, date):
         time.sleep(0.8)
 
         send_btn.click()
-        time.sleep(2)
+        time.sleep(5)
 
         path = f"{os.path.abspath('screenshots')}/{datetime.datetime.now().strftime('%Y-%m-%d__%H')}:mm__{user_id}.png"
 
